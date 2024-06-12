@@ -10,7 +10,7 @@ const app: Express = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // import default main middlewares
-import { mainMiddlewares } from "./middleware/main";
+import { mainMiddlewares } from "./middleware";
 mainMiddlewares(app);
 
 // language middleware
@@ -21,11 +21,12 @@ detectUserLanguage(app);
 import { AppRoutes } from "./routes";
 import { ErrorMiddleware } from "./error";
 import { notFound } from "@hapi/boom";
+import { errMessage } from "./error/messages";
 AppRoutes(app);
 
 // error handling
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
-  next(notFound("we cant find this route"));
+  next(notFound(errMessage(req)["notfound"]));
 });
 
 ErrorMiddleware(app);
